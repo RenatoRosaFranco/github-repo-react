@@ -22,6 +22,7 @@ export const Owner = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-bottom: 1px solid #EEE;
 
   img
   {
@@ -44,6 +45,7 @@ export const Owner = styled.header`
     text-align: centerr;
     line-height: 1.4;
     max-width: 400px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -137,6 +139,24 @@ export const PageActions = styled.div`
     {
       cursor: not-allowed;
       opacity: 0.5;
+    }
+  }
+`;
+
+export const FilterList = styled.div`
+  margin: 15px;
+
+  button
+  {
+    outline: 0;
+    border: 0;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 0 3px;
+
+    &:nth-child(${props => props.active + 1}) {
+      background: #0074db;
+      color: #FFF;
     }
   }
 `;

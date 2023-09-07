@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { FaGithub, FaPlus, FaSpinner, FaBars, FaTrash } from 'react-icons/fa';
-import { Container, Form, SubmitButton, List, DeleteButton } from './styles';
+import { Container, Form, SubmitButton, List, DeleteButton, ErrorMessage } from './styles';
 import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
@@ -10,6 +10,7 @@ const Main = () => {
   const [repositorios, setRepositorios] = useState([]);
   const [loading, setLoading]           = useState(false);
   const [alert, setAlert]               = useState(null);
+  const [errorMsg, setErrorMsg]         = useState(false);
 
   useEffect(() => {
     const repoStorage = localStorage.getItem('repos');
@@ -25,6 +26,7 @@ const Main = () => {
 
   function handleInputChange(e) {
     setNewRepo(e.target.value);
+    setErrorMsg(false);
     setAlert(null);
   }
 
@@ -33,6 +35,7 @@ const Main = () => {
 
     async function submit() {
       setLoading(true);
+      setAlert(null);
 
       try {
         if (newRepo === '') {
@@ -51,7 +54,7 @@ const Main = () => {
         setNewRepo('');
       }catch(err) {
         setAlert(true);
-        console.log(err);
+        setErrorMsg(err.message);
       }finally {
         setLoading(false);
       }
@@ -75,7 +78,9 @@ const Main = () => {
           Meus Repositórios
         </h1>
 
-        <Form onSubmit={ handleSubmit }>
+        { errorMsg? <ErrorMessage>{ errorMsg }</ErrorMessage> : false }
+
+        <Form onSubmit={ handleSubmit } error={alert}>
           <input 
             type="text" 
             placeholder="Adicionar repositórios" 
@@ -85,7 +90,7 @@ const Main = () => {
           
           <SubmitButton loading={ loading ? 1 : 0 }>
             {loading? (
-              <FaSpinner color="#FFF" size={12} />
+              <FaSpinner color="#FFF" size={14} />
             ) : 
               <FaPlus color="#FFF" size={14} />
             }

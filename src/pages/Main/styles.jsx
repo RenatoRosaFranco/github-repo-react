@@ -51,7 +51,7 @@ export const SubmitButton = styled.button.attrs(props => ({
   type: 'submit',
   disabled: props.loading,
 }))`
-  background: #0D2623;
+  background:#0D2636;
   border: 0;
   border-radius: 4px;
   margin-left: 10px;
@@ -60,15 +60,14 @@ export const SubmitButton = styled.button.attrs(props => ({
   justify-content: center;
   align-items: center;
 
-  &[disabled]
-  {
+  &[disabled]{
     cursor: not-allowed;
-    opacity: 0.5s;
+    opacity: 0.5;
   }
 
-  ${props => props.loading && 
+  ${props => props.loading &&
     css`
-      svg {
+      svg{
         animation: ${animate} 2s linear infinite;
       }
     `
@@ -111,3 +110,12 @@ export const DeleteButton = styled.button.attrs({
   outline: 0;
   border-radius: 4px;
 `;
+
+export const ErrorMessage = styled.div`
+  background: #f2dede;
+  padding: 10px;
+  border-radius: 3px;
+  margin-top: 12px;
+  margin-bottom: -10px;
+  color: #a94442;
+`;  

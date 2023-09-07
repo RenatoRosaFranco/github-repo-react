@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-
-import 
-{ 
-  Container, 
-  Owner, 
-  Loading, 
-  BackButton, 
-  IssuesList, 
-  PageActions 
-} 
-from './styles';
+import { Container, Owner, Loading, BackButton, IssuesList, PageActions, FilterList } from './styles';
 
 import api from '../../services/api';
 
@@ -21,6 +11,14 @@ const Repositorio = ({match}) => {
   const [loading, setLoading]         = useState(true);
   const [page, setPage]               = useState(1);
 
+  const [filters, setFilters]         = useState([
+    { state: 'all',    label: 'All',    active: true },
+    { state: 'open',   label: 'Open',  active: false },
+    { state: 'closed', label: 'Closed', active: false }
+  ])
+
+  const [filterIndex, setFilterIndex] = useState(0);
+
   useEffect(() => {
     async function load(){
       const nomeRepo = decodeURIComponent(match.params.repositorio);
@@ -29,7 +27,7 @@ const Repositorio = ({match}) => {
         api.get(`/repos/${nomeRepo}`),
         api.get(`/repos/${nomeRepo}/issues`, {
           params: {
-            state: 'open',
+            state: filters.find(f => f.active).state,
             per_page: 5
           }
         })
@@ -49,20 +47,24 @@ const Repositorio = ({match}) => {
       const nomeRepo = decodeURIComponent(match.params.repositorio);
       const response = await api.get(`/repos/${nomeRepo}/issues`, {
         params: {
-          state: 'open',
-          page,
+          state: filters[filterIndex].state,
+          page: page,
           per_page: 5
         }
       })
-    
+  
       setIssues(response.data);
     }
 
     loadIssue();
-  }, [match.params.repositorio, page]);
+  }, [filterIndex, filters, match.params.repositorio, page]);
 
   function handlePage(action){
     setPage(action === 'back' ? page -1 : page + 1)
+  }
+
+  function handleFilter(index) {
+    setFilterIndex(index);
   }
 
   return(
@@ -87,6 +89,20 @@ const Repositorio = ({match}) => {
             <p>{repositorio.description}</p>
           </Owner>
 
+          <FilterList active={filterIndex}>
+            <center>
+              {filters.map((filter, index) => (
+                <button
+                  type='button'
+                  key={filter.label}
+                  onClick={ () => { handleFilter(index) }}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </center>
+          </FilterList>
+
           <IssuesList>
             {issues.map(issue => (
               <li key={String(issue.id)}>
@@ -100,7 +116,8 @@ const Repositorio = ({match}) => {
                     <a href={issue.html_url}>
                       {issue.title}
                     </a>
-                  
+                    
+                    <span>{issue.state}</span>
                     {issue.labels.map(label => (
                       <span key={String(label.id)}>
                         {label.name}
