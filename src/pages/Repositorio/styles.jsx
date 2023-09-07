@@ -102,8 +102,8 @@ export const IssuesList = styled.ul`
           background: #222;
           color: #FFF;
           border-radius: 4px;
-          font-size: 12px;
-          font-weight: 600;
+            font-size: 12px;
+            font-weight: 600;
           padding: 5px 7px;
           margin-left: 10px;
         }
@@ -117,4 +117,26 @@ export const IssuesList = styled.ul`
       }
     }
   }  
+`;
+
+export const PageActions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  button
+  {
+    outline: 0;
+    border: 0;
+    background: #222;
+    color: #FFF;
+    padding: 5px 10px;
+    border-radius: 4px;
+
+    &:disabled
+    {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
 `;
