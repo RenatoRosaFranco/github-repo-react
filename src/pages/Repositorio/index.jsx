@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Container } from './styles';
+import { Container, Owner, Loading, BackButton }  from './styles';
+import { FaArrowLeft } from 'react-icons/fa';
 
 import api from '../../services/api';
 
 const Repositorio = ({match}) => {
+  
   const [repositorio, setRepositorio] = useState({});
   const [issues, setIssues]           = useState([]);
   const [loading, setLoading]         = useState(true);
 
   useEffect(() => {
-    async function loadRepo(){
+
+    async function load(){
       const nomeRepo = decodeURIComponent(match.params.repositorio);
       
       const [repositorioData, issuesData] = await Promise.all([
@@ -25,15 +28,36 @@ const Repositorio = ({match}) => {
       setRepositorio(repositorioData.data);
       setIssues(issuesData.data);
       setLoading(false);
-
-      loadRepo();
     }
+
+    load();
+
   }, [match.params.repositorios]);
 
   return(
-    <Container>
+    <>
+      { loading ?
+        <Loading>
+          Carregando...
+        </Loading>
+      :
+        <Container>
+          <BackButton to="/">
+            <FaArrowLeft size={30} color={'#000'} />
+          </BackButton>
 
-    </Container>
+          <Owner>
+            <img 
+              src={repositorio.owner.avatar_url} 
+              alt={repositorio.owner.login}
+            />
+
+            <h1>{repositorio.name}</h1>
+            <p>{repositorio.description}</p>
+          </Owner>
+        </Container>
+      }
+    </>
   )
 }
 
